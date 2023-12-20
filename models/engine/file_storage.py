@@ -1,69 +1,69 @@
 #!/usr/bin/python3
-"""definition of the hbnb DB file storage management"""
+"""Defines the FileStorage class."""
 import json
-import os
-from importlib import import_module
+from models.base_model import BaseModel
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 
 class FileStorage:
-    """File storage in the JSON format"""
-    __file_path = 'file.json'
+    """Represent an abstracted storage engine.
+    Attributes:
+        __file_path (str): The name of the file to save objects to.
+        __objects (dict): A dictionary of instantiated objects.
+    """
+
+    __file_path = "file.json"
     __objects = {}
 
-    def __init__(self):
-        """Initialization of the  FileStorage instance"""
-        self.model_classes = {
-            'BaseModel': import_module('models.base_model').BaseModel,
-            'User': import_module('models.user').User,
-            'State': import_module('models.state').State,
-            'City': import_module('models.city').City,
-            'Amenity': import_module('models.amenity').Amenity,
-            'Place': import_module('models.place').Place,
-            'Review': import_module('models.review').Review
-        }
-
     def all(self, cls=None):
-        """Display the dictionary in storage before updating"""
-        if cls is None:
-            return self.__objects
-        else:
-            fdt = {}
-            for K, V in self.__objects.items():
-                if type(V) is cls:
-                    fdt[K] = V
-            return fdt
-
-    def delete(self, obj=None):
-        """the function to delete the obj from the dict"""
-        if obj is not None:
-            objk = obj.to_dict()['__class__'] + '.' + obj.id
-            if objk in self.__objects.keys():
-                del self.__objects[objk]
+        """Return a dictionary of instantiated objects in __objects.
+        If a cls is specified, returns a dictionary of objects of that type.
+        Otherwise, returns the __objects dictionary.
+        """
+        if cls is not None:
+            if type(cls) == str:
+                cls = eval(cls)
+            cls_dict = {}
+            for k, v in self.__objects.items():
+                if type(v) == cls:
+                    cls_dict[k] = v
+            return cls_dict
+        return self.__objects
 
     def new(self, obj):
-        """funct to add new obj to storage dict"""
-        self.__objects.update(
-            {obj.to_dict()['__class__'] + '.' + obj.id: obj}
-        )
+        """Set in __objects obj with key <obj_class_name>.id."""
+        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
 
     def save(self):
-        """the function to save storage dict to file"""
-        with open(self.__file_path, 'w') as file:
-            p = {}
-            for K, V in self.__objects.items():
-                p[K] = V.to_dict()
-            json.dump(p, file)
+        """Serialize __objects to the JSON file __file_path."""
+        odict = {o: self.__objects[o].to_dict() for o in self.__objects.keys()}
+        with open(self.__file_path, "w", encoding="utf-8") as f:
+            json.dump(odict, f)
 
     def reload(self):
-        """Add storage dict from file"""
-        cls = self.model_classes
-        if os.path.isfile(self.__file_path):
-            P = {}
-            with open(self.__file_path, 'r') as file:
-                P = json.load(file)
-                for K, V in P.items():
-                    self.all()[K] = cls[V['__class__']](**V)
+        """Deserialize the JSON file __file_path to __objects, if it exists."""
+        try:
+            with open(self.__file_path, "r", encoding="utf-8") as f:
+                for o in json.load(f).values():
+                    name = o["__class__"]
+                    del o["__class__"]
+                    self.new(eval(name)(**o))
+        except FileNotFoundError:
+            pass
+
+    def delete(self, obj=None):
+        """Delete a given object from __objects, if it exists."""
+        try:
+            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
+        except (AttributeError, KeyError):
+            pass
 
     def close(self):
-        """function to close the storage engine."""
+        """Call the reload method."""
         self.reload()
+
