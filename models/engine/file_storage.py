@@ -22,14 +22,14 @@ class FileStorage:
             'Review': import_module('models.review').Review
         }
 
-    def all(self, clas=None):
+    def all(self, cls=None):
         """Display the dictionary in storage before updating"""
-        if clas is None:
+        if cls is None:
             return self.__objects
         else:
             fdt = {}
             for K, V in self.__objects.items():
-                if type(V) is clas:
+                if type(V) is cls:
                     fdt[K] = V
             return fdt
 
