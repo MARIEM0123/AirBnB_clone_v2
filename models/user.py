@@ -1,18 +1,34 @@
 #!/usr/bin/python3
-"""Heritates from BaseModel for the User class."""
-from models.base_model import BaseModel
+"""The module defination of a class User"""
+import os
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
 
-class User(BaseModel):
-    """Defines a User model.
 
-    Attributes:
-        email (str): string - empty string the email of the user.
-        password (str): string - empty string the password of the user.
-        first_name (str): string - empty string the first name of the user.
-        last_name (str): string - empty string the last name of the user.
-    """
+class User(BaseModel, Base):
+    """The class defination of a user"""
+    __tablename__ = 'users'
+    email = Column(
+        String(128), nullable=False
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+    password = Column(
+        String(128), nullable=False
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+    first_name = Column(
+        String(128), nullable=True
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+    last_name = Column(
+        String(128), nullable=True
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+    places = relationship(
+        'Place',
+        cascade="all, delete, delete-orphan",
+        backref='user'
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else None
+    reviews = relationship(
+        'Review',
+        cascade="all, delete, delete-orphan",
+        backref='user'
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else None
 
-    email = ""
-    password = ""
-    first_name = ""
-    last_name = ""
