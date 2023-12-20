@@ -1,16 +1,22 @@
 #!/usr/bin/python3
-"""Heritates from BaseModel a Review class."""
-from models.base_model import BaseModel
+""" Review module for the HBNB project """
+import os
+from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy.orm import relationship
 
-class Review(BaseModel):
-    """Definition of a review
+from models.base_model import BaseModel, Base
 
-    Attributes:
-        place_id (str): string - empty string: it will be the Place.id
-        user_id (str): string - empty string: it will be the User.id
-        text (str): string - empty string
-    """
 
-    place_id = ""
-    user_id = ""
-    text = ""
+class Review(BaseModel, Base):
+    """ Review classto store review information """
+    __tablename__ = 'reviews'
+    place_id = Column(
+        String(60), ForeignKey('places.id'), nullable=False
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+    user_id = Column(
+        String(60), ForeignKey('users.id'), nullable=False
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+    text = Column(
+        String(1024), nullable=False
+    ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else ''
+
