@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Place Module for HBNB project """
+""" The presentation of the Place Module for this projects """
 import os
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
@@ -27,13 +27,13 @@ place_amenity = Table(
         primary_key=True
     )
 )
-"""Represents the many to many relationship table
-between Place and Amenity records.
+"""Representstion of  the many to many relationship
+between Place and Amenity for this projects
 """
 
 
 class Place(BaseModel, Base):
-    """ A place to stay """
+    """ A class representation of the place state"""
     __tablename__ = 'places'
     city_id = Column(
         String(60), ForeignKey('cities.id'), nullable=False
@@ -81,7 +81,7 @@ class Place(BaseModel, Base):
     else:
         @property
         def amenities(self):
-            """Returns the amenities of this Place"""
+            """Displays the amenities of the Place in this project"""
             from models import storage
             amenities_of_place = []
             for value in storage.all(Amenity).values():
@@ -91,14 +91,14 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, value):
-            """Adds an amenity to this Place"""
+            """The funct to add an amenity of this Place in this project"""
             if type(value) is Amenity:
                 if value.id not in self.amenity_ids:
                     self.amenity_ids.append(value.id)
 
         @property
         def reviews(self):
-            """Returns the reviews of this Place"""
+            """Tge funct to display the reviews of this Place in this project"""
             from models import storage
             reviews_of_place = []
             for value in storage.all(Review).values():
