@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Module for testing file storage"""
+""" The Module for checking file storage with many teste"""
 import MySQLdb
 import os
 import unittest
@@ -12,9 +12,9 @@ from models.user import User
 @unittest.skipIf(
     os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
 class TestDBStorage(unittest.TestCase):
-    """ Class to test the database storage method """
+    """ Class to chexk the DB using many tests """
     def test_new(self):
-        """ New object is correctly added to database """
+        """ The funct to get new object added to DB """
         new = User(
             email='john2020@gmail.com',
             password='password',
@@ -43,7 +43,7 @@ class TestDBStorage(unittest.TestCase):
         dbc.close()
 
     def test_delete(self):
-        """ Object is correctly deleted from database """
+        """ The object to be removed from the DB """
         new = User(
             email='john2020@gmail.com',
             password='password',
@@ -75,7 +75,7 @@ class TestDBStorage(unittest.TestCase):
         dbc.close()
 
     def test_reload(self):
-        """ Tests the reloading of the database session """
+        """ The funct to check the DB reloading by many tests """
         dbc = MySQLdb.connect(
             host=os.getenv('HBNB_MYSQL_HOST'),
             port=3306,
@@ -105,7 +105,7 @@ class TestDBStorage(unittest.TestCase):
         dbc.close()
 
     def test_save(self):
-        """ object is successfully saved to database """
+        """ The test to check if the object is stored to DB """
         new = User(
             email='john2020@gmail.com',
             password='password',
@@ -148,12 +148,12 @@ class TestDBStorage(unittest.TestCase):
         dbc.close()
 
     def test_storage_var_created(self):
-        """ DBStorage object storage created """
+        """ The funct to create DB Storage object """
         from models.engine.db_storage import DBStorage
         self.assertEqual(type(storage), DBStorage)
 
     def test_new_and_save(self):
-        '''testing  the new and save methods'''
+        '''the funct to test the updated results '''
         db = MySQLdb.connect(user=os.getenv('HBNB_MYSQL_USER'),
                              host=os.getenv('HBNB_MYSQL_HOST'),
                              passwd=os.getenv('HBNB_MYSQL_PWD'),
