@@ -1,17 +1,17 @@
 #!/usr/bin/python3
-"""This module defines a class to manage file storage for hbnb clone"""
+"""The presentation of module class for the class file storage management for hbnb clone"""
 import json
 import os
 from importlib import import_module
 
 
 class FileStorage:
-    """This class manages storage of hbnb models in JSON format"""
+    """The functionality of this class is to manage storage of hbnb in JSON format"""
     __file_path = 'file.json'
     __objects = {}
 
     def __init__(self):
-        """Initializes a FileStorage instance"""
+        """The initialization a FileStorage occurence"""
         self.model_classes = {
             'BaseModel': import_module('models.base_model').BaseModel,
             'User': import_module('models.user').User,
@@ -23,7 +23,7 @@ class FileStorage:
         }
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
+        """Displays a dictionary of stored models updated"""
         if cls is None:
             return self.__objects
         else:
@@ -34,36 +34,36 @@ class FileStorage:
             return filtered_dict
 
     def delete(self, obj=None):
-        """Removes an object from the storage dictionary"""
+        """The funct deletes an object from the dictionary"""
         if obj is not None:
             obj_key = obj.to_dict()['__class__'] + '.' + obj.id
             if obj_key in self.__objects.keys():
                 del self.__objects[obj_key]
 
     def new(self, obj):
-        """Adds new object to storage dictionary"""
+        """ Displays new object added to the dictionary"""
         self.__objects.update(
             {obj.to_dict()['__class__'] + '.' + obj.id: obj}
         )
 
     def save(self):
-        """Saves storage dictionary to file"""
+        """The new  dictionary saved to a file"""
         with open(self.__file_path, 'w') as file:
-            temp = {}
+            i = {}
             for key, val in self.__objects.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, file)
+                i[key] = val.to_dict()
+            json.dump(i, file)
 
     def reload(self):
-        """Loads storage dictionary from file"""
+        """Extracts information of the dictionary from file"""
         classes = self.model_classes
         if os.path.isfile(self.__file_path):
-            temp = {}
+            i = {}
             with open(self.__file_path, 'r') as file:
-                temp = json.load(file)
-                for key, val in temp.items():
+                i = json.load(file)
+                for key, val in i.items():
                     self.all()[key] = classes[val['__class__']](**val)
 
     def close(self):
-        """Closes the storage engine."""
+        """The funct to close the storage engine definitely."""
         self.reload()
