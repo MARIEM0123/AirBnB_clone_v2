@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+"""The State Module presentation for this project """
 import os
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
@@ -23,7 +23,7 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
-            """Returns the cities in this State"""
+            """The function displays the cities ina given State"""
             from models import storage
             cities_in_state = []
             for value in storage.all(City).values():
