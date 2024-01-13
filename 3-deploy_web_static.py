@@ -53,4 +53,3 @@ def deploy():
         return False
     f = do_deploy(path)
     return f
-
